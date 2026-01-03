@@ -2,9 +2,12 @@ package com.app.paymentwallet.framework.system
 
 import android.content.Context
 import com.app.paymentwallet.core.domain.model.Contact
+import com.app.paymentwallet.core.domain.model.ContactId
 import com.app.paymentwallet.core.domain.model.Money
+import com.app.paymentwallet.core.domain.model.PersonInfo
 import com.app.paymentwallet.core.domain.model.SeedData
 import com.app.paymentwallet.core.domain.model.User
+import com.app.paymentwallet.core.domain.model.UserId
 import com.app.paymentwallet.core.domain.model.Wallet
 import com.app.paymentwallet.core.ports.system.SeedDataProvider
 import org.json.JSONArray
@@ -35,13 +38,17 @@ class SeedDataProviderImpl(
         if (this == null) return emptyList()
         return (0 until length()).map { i ->
             val o = getJSONObject(i)
+            val id = o.getString("id")
+            val name = o.getString("name")
+            val email = o.getString("email")
+
             User(
-                id = o.getString("id"),
-                name = o.getString("name"),
-                email = o.getString("email")
+                id = UserId(id),
+                info = PersonInfo(id = id, name = name, email = email)
             )
         }
     }
+
 
     private fun JSONArray?.toWallets(): List<Wallet> {
         if (this == null) return emptyList()
@@ -58,10 +65,13 @@ class SeedDataProviderImpl(
         if (this == null) return emptyList()
         return (0 until length()).map { i ->
             val o = getJSONObject(i)
+            val id = o.getString("id")
+            val name = o.getString("name")
+            val email = o.getString("email")
+
             Contact(
-                id = o.getString("id"),
-                name = o.getString("name"),
-                email = o.getString("email")
+                id = ContactId(id),
+                info = PersonInfo(id = id, name = name, email = email)
             )
         }
     }
