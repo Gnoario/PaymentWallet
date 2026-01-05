@@ -1,4 +1,4 @@
-package com.app.paymentwallet
+package com.app.paymentwallet.presentation.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.app.paymentwallet.ui.theme.PaymentWalletTheme
+import com.app.paymentwallet.presentation.ui.theme.PaymentWalletTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

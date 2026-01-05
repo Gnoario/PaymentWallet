@@ -1,4 +1,4 @@
-package com.app.paymentwallet.ui.theme
+package com.app.paymentwallet.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

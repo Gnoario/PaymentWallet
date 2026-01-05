@@ -1,4 +1,4 @@
-package com.app.paymentwallet.core.network.result
+package com.app.paymentwallet.core.data
 
 import com.app.paymentwallet.core.domain.constants.Network
 import com.app.paymentwallet.framework.network.exception.ClientErrorException

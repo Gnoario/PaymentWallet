@@ -1,4 +1,4 @@
-package com.app.paymentwallet.core.domain.usecase.login
+package com.app.paymentwallet.core.domain.usecase.auth
 
 import com.app.paymentwallet.core.domain.model.User
 
