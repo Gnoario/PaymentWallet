@@ -3,8 +3,7 @@
     "credentials": [
       {
         "email": "user@paymentwallet.com",
-        "password": "123456",
-        "userId": "u_001"
+        "password": "123456"
       }
     ]
   },
@@ -13,21 +12,83 @@
       "id": "u_001",
       "name": "Tadeu Sobral",
       "email": "user@paymentwallet.com"
+    },
+    {
+      "id": "u_002",
+      "name": "Ana Lima",
+      "email": "ana@contacts.com"
+    },
+    {
+      "id": "u_003",
+      "name": "Bruno Silva",
+      "email": "bruno@contacts.com"
+    },
+    {
+      "id": "u_004",
+      "name": "Carla Souza",
+      "email": "carla@contacts.com"
     }
   ],
   "wallets": [
     {
       "userId": "u_001",
       "balanceCents": 500000
+    },
+    {
+      "userId": "u_002",
+      "balanceCents": 400000
+    },
+    {
+      "userId": "u_003",
+      "balanceCents": 200000
+    },
+    {
+      "userId": "u_004",
+      "balanceCents": 150000
     }
   ],
   "contacts": [
-    { "id": "c_001", "name": "Ana Lima", "email": "ana@contacts.com" },
-    { "id": "c_002", "name": "Bruno Silva", "email": "bruno@contacts.com" },
-    { "id": "c_003", "name": "Carla Souza", "email": "carla@contacts.com" }
+    {
+      "id": "c_001",
+      "name": "Tadeu Sobral",
+      "email": "user@paymentwallet.com",
+      "relationship_ids": [
+        "u_002",
+        "u_004"
+      ]
+    },
+    {
+      "id": "c_002",
+      "name": "Ana Lima",
+      "email": "ana@contacts.com",
+      "relationship_ids": [
+        "u_001",
+        "u_002"
+      ]
+    },
+    {
+      "id": "c_003",
+      "name": "Bruno Silva",
+      "email": "bruno@contacts.com",
+      "relationship_ids": [
+        "u_001",
+        "u_003"
+      ]
+    },
+    {
+      "id": "c_004",
+      "name": "Carla Souza",
+      "email": "carla@contacts.com",
+      "relationship_ids": [
+        "u_001",
+        "u_004"
+      ]
+    }
   ],
   "authorizeRules": {
-    "denyWhenAmountEqualsCents": [40300],
+    "denyWhenAmountEqualsCents": [
+      40300
+    ],
     "defaultAuthorized": true,
     "denyReason": "Operation denied by mock rule (403)"
   }
