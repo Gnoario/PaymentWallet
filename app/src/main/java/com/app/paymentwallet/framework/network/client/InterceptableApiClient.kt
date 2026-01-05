@@ -1,9 +1,10 @@
 package com.app.paymentwallet.framework.network.client
 
-import com.app.paymentwallet.core.domain.model.NetworkRequest
+import com.app.paymentwallet.core.domain.model.ApiRequest
 import com.app.paymentwallet.core.network.ApiClient
 import com.app.paymentwallet.core.network.ApiInterceptor
 import com.app.paymentwallet.core.network.Response
+import com.app.paymentwallet.framework.di.Container
 
 internal class InterceptableApiClient(
     private val realClient: ApiClient,
@@ -34,7 +35,7 @@ internal class InterceptableApiClient(
         body: String?
     ): Response {
 
-        val request = NetworkRequest(method, url, body)
+        val request = ApiRequest(method, url, body)
 
         return RealChain(realClient, interceptors, 0)
             .proceed(request)
@@ -46,10 +47,10 @@ internal class InterceptableApiClient(
         private val index: Int
     ) : ApiInterceptor.Chain {
 
-        override fun proceed(request: NetworkRequest): Response {
+        override fun proceed(request: ApiRequest): Response {
             return if (index < interceptors.size) {
                 interceptors[index]
-                    .intercept(request, RealChain(client, interceptors, index + 1))
+                    .invoke(request, RealChain(client, interceptors, index + 1))
             } else {
                 when (request.method) {
                     "GET" -> client.get(request.url)

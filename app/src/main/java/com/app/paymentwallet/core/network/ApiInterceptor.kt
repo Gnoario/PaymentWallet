@@ -1,14 +1,14 @@
 package com.app.paymentwallet.core.network
 
-import com.app.paymentwallet.core.domain.model.NetworkRequest
+import com.app.paymentwallet.core.domain.model.ApiRequest
 
 internal interface ApiInterceptor {
-    fun intercept(
-        request: NetworkRequest,
+    fun invoke(
+        request: ApiRequest,
         chain: Chain
     ): Response
 
     interface Chain {
-        fun proceed(request: NetworkRequest): Response
+        fun proceed(request: ApiRequest): Response
     }
 }
