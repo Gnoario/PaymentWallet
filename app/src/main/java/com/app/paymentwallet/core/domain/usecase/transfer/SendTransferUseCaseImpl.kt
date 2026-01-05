@@ -36,7 +36,7 @@ class SendTransferUseCaseImpl : SendTransferUseCase {
         }
 
         val transfer = Transfer(
-            id = idGenerator.invoke(),
+            id = idGenerator.new(),
             payerId = payerId,
             payeeId = payeeId,
             amount = amount,
