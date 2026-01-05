@@ -1,78 +1,54 @@
 package com.app.paymentwallet.framework.system
 
 import android.content.Context
-import com.app.paymentwallet.core.domain.model.Contact
-import com.app.paymentwallet.core.domain.model.ContactId
-import com.app.paymentwallet.core.domain.model.Money
-import com.app.paymentwallet.core.domain.model.PersonInfo
-import com.app.paymentwallet.core.domain.model.SeedData
-import com.app.paymentwallet.core.domain.model.User
-import com.app.paymentwallet.core.domain.model.UserId
-import com.app.paymentwallet.core.domain.model.Wallet
+import com.app.paymentwallet.core.network.ApiClient
+import com.app.paymentwallet.core.network.ApiRoutes
 import com.app.paymentwallet.core.ports.system.SeedDataProvider
-import org.json.JSONArray
+import com.app.paymentwallet.framework.di.Container
 import org.json.JSONObject
 
 class SeedDataProviderImpl(
     private val context: Context,
-    private val assetFileName: String = "mock_seed.json"
+    private val assetFileName: String = "mock_seed.json",
 ) : SeedDataProvider {
 
-    override fun load(): Result<SeedData> = runCatching {
+    private val apiClient: ApiClient by Container.delegate()
 
-        val jsonText = context.assets.open(assetFileName).bufferedReader().use { it.readText() }
+    override fun invoke(): Result<Unit> = runCatching {
+
+        val jsonText = context.assets
+            .open(assetFileName)
+            .bufferedReader()
+            .use { it.readText() }
+
         val root = JSONObject(jsonText)
 
-        val users = root.optJSONArray("users").toUsers()
-        val wallets = root.optJSONArray("wallets").toWallets()
-        val contacts = root.optJSONArray("contacts").toContacts()
-
-        SeedData(
-            users = users,
-            wallets = wallets,
-            contacts = contacts
-        )
-    }
-
-    private fun JSONArray?.toUsers(): List<User> {
-        if (this == null) return emptyList()
-        return (0 until length()).map { i ->
-            val o = getJSONObject(i)
-            val id = o.getString("id")
-            val name = o.getString("name")
-            val email = o.getString("email")
-
-            User(
-                id = UserId(id),
-                info = PersonInfo(id = id, name = name, email = email)
-            )
+        root.optJSONArray("credentials")?.let { credentials ->
+            apiClient.post(ApiRoutes.CREDENTIALS, credentials.toString())
         }
-    }
 
-
-    private fun JSONArray?.toWallets(): List<Wallet> {
-        if (this == null) return emptyList()
-        return (0 until length()).map { i ->
-            val o = getJSONObject(i)
-            Wallet(
-                userId = o.getString("userId"),
-                balance = Money(o.getLong("balanceCents"))
-            )
+        root.optJSONArray("users")?.let { users ->
+            for (i in 0 until users.length()) {
+                val user = users.getJSONObject(i)
+                val id = user.getString("id")
+                apiClient.post(ApiRoutes.user(id), user.toString())
+            }
         }
-    }
 
-    private fun JSONArray?.toContacts(): List<Contact> {
-        if (this == null) return emptyList()
-        return (0 until length()).map { i ->
-            val o = getJSONObject(i)
-            val id = o.getString("id")
-            val name = o.getString("name")
-            val email = o.getString("email")
+        root.optJSONArray("wallets")?.let { wallets ->
+            for (i in 0 until wallets.length()) {
+                val wallet = wallets.getJSONObject(i)
+                val userId = wallet.getString("userId")
+                apiClient.post(ApiRoutes.wallet(userId), wallet.toString())
+            }
+        }
 
-            Contact(
-                id = ContactId(id),
-                info = PersonInfo(id = id, name = name, email = email)
-            )
+        root.optJSONArray("contacts")?.let { contacts ->
+            apiClient.post(ApiRoutes.CONTACTS, contacts.toString())
+        }
+
+        root.optJSONObject("authorizeRules")?.let { rules ->
+            apiClient.post(ApiRoutes.AUTHORIZE_RULES, rules.toString())
         }
     }
 }
