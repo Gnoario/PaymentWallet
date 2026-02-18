@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import com.app.paymentwallet.core.domain.usecase.home.GetHomeSnapshotUseCase
+import com.app.paymentwallet.framework.di.Container
 import com.app.paymentwallet.presentation.ui.theme.PaymentWalletTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,6 +43,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PaymentWalletApp() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+    val getHomeSnapshotUseCase: GetHomeSnapshotUseCase by Container.delegate()
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
@@ -54,7 +57,7 @@ fun PaymentWalletApp() {
                     },
                     label = { Text(it.label) },
                     selected = it == currentDestination,
-                    onClick = { currentDestination = it }
+                    onClick = { getHomeSnapshotUseCase() /* Navigate to destination */ }
                 )
             }
         }

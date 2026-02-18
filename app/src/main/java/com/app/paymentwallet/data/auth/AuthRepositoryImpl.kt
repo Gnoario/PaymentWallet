@@ -8,6 +8,8 @@ import com.app.paymentwallet.core.domain.model.UserId
 import com.app.paymentwallet.core.network.ApiClient
 import com.app.paymentwallet.core.network.ApiRoutes
 import com.app.paymentwallet.core.ports.repository.AuthRepository
+import com.app.paymentwallet.core.ports.system.Clock
+import com.app.paymentwallet.core.ports.system.IdGenerator
 import com.app.paymentwallet.framework.di.Container
 import org.json.JSONObject
 import kotlin.getValue
@@ -15,6 +17,8 @@ import kotlin.getValue
 class AuthRepositoryImpl() : AuthRepository {
 
     private val apiClient: ApiClient by Container.delegate()
+    private val idGenerator: IdGenerator by Container.delegate()
+    private val clock: Clock by Container.delegate()
 
     override fun login(email: String, password: String): Result<User> = runCatching {
 
@@ -30,8 +34,8 @@ class AuthRepositoryImpl() : AuthRepository {
                     id = userId.value, name = o.getString("name"), email = o.getString("email")
                 )
                 val token = AuthToken(
-                    value = o.getString("authToken"),
-                    createdAtEpochMillis = o.getLong("tokenCreatedAt")
+                    value = idGenerator.new(),
+                    createdAtEpochMillis = clock.nowEpochMillis(),
                 )
                 User(
                     id = userId, info = personInfo, authToken = token

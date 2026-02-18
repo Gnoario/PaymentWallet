@@ -3,7 +3,6 @@ package com.app.paymentwallet.core.domain.usecase.auth
 import com.app.paymentwallet.core.domain.model.User
 import com.app.paymentwallet.core.ports.repository.AuthRepository
 import com.app.paymentwallet.core.ports.storage.LocalUserStore
-import com.app.paymentwallet.core.ports.storage.TokenStore
 import com.app.paymentwallet.framework.di.Container
 import kotlin.getValue
 
@@ -12,8 +11,6 @@ class LoginUseCaseImpl(
 
     private val authRepository: AuthRepository by Container.delegate()
     private val userStore: LocalUserStore by Container.delegate()
-
-    private val tokenStore: TokenStore by Container.delegate()
 
     override operator fun invoke(
         email: String,
@@ -24,7 +21,6 @@ class LoginUseCaseImpl(
             .getOrElse { throw it }
 
         userStore.save(user).getOrElse { throw it }
-        tokenStore.save(user.authToken).getOrElse { throw it }
 
         user
     }
